@@ -21,12 +21,15 @@ Div.prototype.render = function() {
 	var node = this.node = document.createElement("DIV")
 	var downEventHandler = function(evt){
 		evt.preventDefault()
+		var offset = null
 		var moveEventHandler = function(evt){
-			node.style.left = evt.clientX + 'px'
-			node.style.top = evt.clientY + 'px'
+			offset = offset || [evt.clientX - node.offsetLeft, evt.clientY - node.offsetTop]
+			node.style.left = (evt.clientX - offset[0]) + 'px'
+			node.style.top = (evt.clientY - offset[1]) + 'px'
 		}
 		var dropEventHandler = function(evt){
 			document.removeEventListener('mousemove', moveEventHandler)
+			offset = null
 			document.removeEventListener('mouseup', dropEventHandler)
 		}
 		document.addEventListener('mousemove', moveEventHandler)
