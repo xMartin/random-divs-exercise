@@ -18,7 +18,21 @@ var Div = function(args) {
 	return this
 }
 Div.prototype.render = function() {
-	this.node = document.createElement("DIV")
+	var node = this.node = document.createElement("DIV")
+	var downEventHandler = function(evt){
+		evt.preventDefault()
+		var moveEventHandler = function(evt){
+			node.style.left = evt.clientX + 'px'
+			node.style.top = evt.clientY + 'px'
+		}
+		var dropEventHandler = function(evt){
+			document.removeEventListener('mousemove', moveEventHandler)
+			document.removeEventListener('mouseup', dropEventHandler)
+		}
+		document.addEventListener('mousemove', moveEventHandler)
+		document.addEventListener('mouseup', dropEventHandler)
+	}
+	node.addEventListener('mousedown', downEventHandler)
 	var styles = {
 		position: 'absolute',
 		left: this.position[0] + 'px',
@@ -28,7 +42,7 @@ Div.prototype.render = function() {
 		background: this.color
 	}
 	for (var property in styles) {
-		this.node.style[property] = styles[property]
+		node.style[property] = styles[property]
 	}
 }
 
