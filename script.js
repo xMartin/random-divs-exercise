@@ -1,19 +1,16 @@
 "use strict";
-(function(){
+(function() {
 
 var myLib = (function() {
-	
 	var isTouchDevice = 'ontouchstart' in window
-	
 	var events = {
 		'press': isTouchDevice ? 'touchstart' : 'mousedown',
 		'move': isTouchDevice ? 'touchmove' : 'mousemove',
 		'release': isTouchDevice ? 'touchend' : 'mouseup'
 	}
-	
 	return {
-		
 		getClientPosition: function(evt) {
+			// mouse
 			if (evt.clientX !== undefined) {
 				return [evt.clientX, evt.clientY]
 			}
@@ -23,14 +20,12 @@ var myLib = (function() {
 			}
 			return null
 		},
-
 		on: function(/*DOMNode*/ node, /*String*/ event, /*Function*/ handler) {
 			if (event in events) {
 				event = events[event]
 			}
 			return node.addEventListener(event, handler)
 		},
-		
 		off: function(/*DOMNode*/ node, /*String*/ event, /*Function*/ handler) {
 			if (event in events) {
 				event = events[event]
@@ -127,16 +122,7 @@ var Div = function(args) {
 Div.zIndex = 1
 
 var controller = (function() {
-	
 	var boxSize = [30, 30]
-	
-	var init = function() {
-		var button = document.createElement('BUTTON')
-		button.appendChild(document.createTextNode('add box'))
-		button.addEventListener('click', addBox)
-		document.body.appendChild(button)
-	}
-	
 	var addBox = function() {
 		var position = [
 			Math.floor(Math.random() * (window.innerWidth - boxSize[0])),
@@ -146,9 +132,13 @@ var controller = (function() {
 		var cssColor = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'
 		document.body.appendChild((new Div({size: boxSize, position: position, color: cssColor})).node)
 	}
-	
 	return {
-		init: init
+		init: function() {
+			var button = document.createElement('BUTTON')
+			button.appendChild(document.createTextNode('add box'))
+			button.addEventListener('click', addBox)
+			document.body.appendChild(button)
+		}
 	}
 })()
 
