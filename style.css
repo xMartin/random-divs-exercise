@@ -1,0 +1,15 @@
+.draggable {
+	cursor: move;
+}
+
+.close {
+	position: absolute;
+	top: -4px;
+	left: -4px;
+	width: 10px;
+	height: 10px;
+	border: 2px solid #666;
+	background: #aaa;
+	cursor: pointer;
+	content: 'X';
+}

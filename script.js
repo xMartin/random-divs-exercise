@@ -18,6 +18,7 @@ var Div = function(args) {
 	
 	// Create main element and add style.
 	var node = this.node = document.createElement("DIV")
+	node.className = 'draggable'
 	var styles = {
 		position: 'absolute',
 		left: this.position[0] + 'px',
@@ -51,7 +52,7 @@ var Div = function(args) {
 	
 	// Add close button.
 	var closeNode = document.createElement('DIV')
-	closeNode.setAttribute('style', 'position:absolute;top:-4px;left:-4px;width:11px;height:11px;background:black;')
+	closeNode.className = 'close'
 	closeNode.addEventListener('click', function() {
 		node.parentNode.removeChild(node)
 	})
