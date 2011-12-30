@@ -56,6 +56,9 @@ var Div = function(args) {
 	closeNode.addEventListener('click', function() {
 		node.parentNode.removeChild(node)
 	})
+	closeNode.addEventListener('mousedown', function(evt) {
+		evt.stopPropagation()
+	})
 	node.appendChild(closeNode)
 	
 	return this
