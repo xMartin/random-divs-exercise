@@ -44,6 +44,8 @@ var Div = function(args) {
 	//		The initial absolute position in pixels (x, y).
 	//	args.color: String
 	//		A CSS-compatible color value.
+	//
+	//	returns itself, holding the main DOM element as the property `node` so we can append it to the document
 	
 	// Handle arguments.
 	this.size = args.size
