@@ -50,7 +50,7 @@ var Div = function(args) {
 		node.parentNode.removeChild(node)
 	})
 	closeNode.addEventListener('mousedown', function(evt) {
-		evt.stopPropagation()
+		evt.stopPropagation()  // no dragging here
 	})
 	node.appendChild(closeNode)
 	
