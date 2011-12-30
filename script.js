@@ -104,6 +104,7 @@ var Div = function(args) {
 		evt.stopPropagation()  // no widget dragging
 		var clientPosition = myLib.getClientPosition(evt)
 		var startPosition = clientPosition
+		node.style.zIndex = Div.zIndex++
 		var startDimensions = [node.clientWidth, node.clientHeight]
 		var moveEventHandler = function(evt) {
 			var clientPosition = myLib.getClientPosition(evt)
