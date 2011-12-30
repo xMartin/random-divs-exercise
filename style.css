@@ -11,6 +11,11 @@
 	border: 2px solid #666;
 	background: #aaa;
 	cursor: pointer;
+	color: #666;
+	font-size: 11px;
+	font-family: sans-serif;
+}
+.close:before {
 	content: 'X';
 }
 
