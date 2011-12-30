@@ -102,9 +102,8 @@ var Div = function(args) {
 	myLib.on(resizeNode, 'press', function(evt) {
 		evt.preventDefault()  // no native dragging
 		evt.stopPropagation()  // no widget dragging
-		var clientPosition = myLib.getClientPosition(evt)
-		var startPosition = clientPosition
 		node.style.zIndex = Div.zIndex++
+		var startPosition = myLib.getClientPosition(evt)
 		var startDimensions = [node.clientWidth, node.clientHeight]
 		var moveEventHandler = function(evt) {
 			var clientPosition = myLib.getClientPosition(evt)
