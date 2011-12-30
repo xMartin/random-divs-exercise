@@ -19,37 +19,29 @@ var Div = function(args) {
 	// Create main element and add style.
 	var node = this.node = document.createElement("DIV")
 	node.className = 'draggable'
-	var styles = {
-		position: 'absolute',
-		left: this.position[0] + 'px',
-		top: this.position[1] + 'px',
-		width: this.size[0] + 'px',
-		height: this.size[1] + 'px',
-		background: this.color
-	}
-	for (var property in styles) {
-		node.style[property] = styles[property]
-	}
-
+	node.style.position = 'absolute'
+	node.style.left = this.position[0] + 'px'
+	node.style.top = this.position[1] + 'px'
+	node.style.width = this.size[0] + 'px'
+	node.style.height = this.size[1] + 'px'
+	node.style.background = this.color
+	
 	// Make draggable.
-	var downEventHandler = function(evt) {
+	node.addEventListener('mousedown', function(evt) {
 		evt.preventDefault()  // no native dragging
 		node.style.zIndex = Div.zIndex++
-		var offset = null
+		var offset = [evt.clientX - node.offsetLeft, evt.clientY - node.offsetTop]
 		var moveEventHandler = function(evt) {
-			offset = offset || [evt.clientX - node.offsetLeft, evt.clientY - node.offsetTop]
 			node.style.left = (evt.clientX - offset[0]) + 'px'
 			node.style.top = (evt.clientY - offset[1]) + 'px'
 		}
 		var dropEventHandler = function(evt) {
 			document.removeEventListener('mousemove', moveEventHandler)
-			offset = null
 			document.removeEventListener('mouseup', dropEventHandler)
 		}
 		document.addEventListener('mousemove', moveEventHandler)
 		document.addEventListener('mouseup', dropEventHandler)
-	}
-	node.addEventListener('mousedown', downEventHandler)
+	})
 	
 	// Add close button.
 	var closeNode = document.createElement('DIV')
@@ -65,7 +57,7 @@ var Div = function(args) {
 	// Add resize handle.
 	var resizeNode = document.createElement('DIV')
 	resizeNode.setAttribute('style', 'position:absolute;bottom:-3px;right:-3px;width:7px;height:7px;cursor:se-resize;')
-	var resizeDownEventHandler = function(evt) {
+	resizeNode.addEventListener('mousedown', function(evt) {
 		evt.preventDefault()  // no native dragging
 		evt.stopPropagation()  // no widget dragging
 		var startPosition = [evt.clientX, evt.clientY]
@@ -80,8 +72,7 @@ var Div = function(args) {
 		}
 		document.addEventListener('mousemove', moveEventHandler)
 		document.addEventListener('mouseup', dropEventHandler)
-	}
-	resizeNode.addEventListener('mousedown', resizeDownEventHandler)
+	})
 	node.appendChild(resizeNode)
 	
 	return this
