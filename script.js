@@ -61,6 +61,28 @@ var Div = function(args) {
 	})
 	node.appendChild(closeNode)
 	
+	// Add resize handle.
+	var resizeNode = document.createElement('DIV')
+	resizeNode.setAttribute('style', 'position:absolute;bottom:-3px;right:-3px;width:7px;height:7px;cursor:se-resize;')
+	var resizeDownEventHandler = function(evt) {
+		evt.preventDefault()  // no native dragging
+		evt.stopPropagation()  // no widget dragging
+		var startPosition = [evt.clientX, evt.clientY]
+		var startDimensions = [node.clientWidth, node.clientHeight]
+		var moveEventHandler = function(evt) {
+			node.style.width = (startDimensions[0] + evt.clientX - startPosition[0]) + 'px'
+			node.style.height = (startDimensions[1] + evt.clientY - startPosition[1]) + 'px'
+		}
+		var dropEventHandler = function(evt) {
+			document.removeEventListener('mousemove', moveEventHandler)
+			document.removeEventListener('mouseup', dropEventHandler)
+		}
+		document.addEventListener('mousemove', moveEventHandler)
+		document.addEventListener('mouseup', dropEventHandler)
+	}
+	resizeNode.addEventListener('mousedown', resizeDownEventHandler)
+	node.appendChild(resizeNode)
+	
 	return this
 }
 
