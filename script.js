@@ -98,7 +98,7 @@ var Div = function(args) {
 	
 	// Add resize handle.
 	var resizeNode = document.createElement('DIV')
-	resizeNode.setAttribute('style', 'position:absolute;bottom:-3px;right:-3px;width:7px;height:7px;cursor:se-resize;')
+	resizeNode.className = 'resize'
 	myLib.on(resizeNode, 'press', function(evt) {
 		evt.preventDefault()  // no native dragging
 		evt.stopPropagation()  // no widget dragging

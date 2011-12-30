@@ -13,3 +13,13 @@
 	cursor: pointer;
 	content: 'X';
 }
+
+.resize {
+	position: absolute;
+	bottom: -2px;
+	right: -2px;
+	width: 12px;
+	height: 12px;
+	cursor: se-resize;
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAWElEQVR42pWQ4QbAMBCDr/TH2Ats7/+g2ZiPk1avC6GRL5yGpMGvenwii/cMPiIJeDEY4d2Bry8G7hksuhIm02/BNihhdDPIZXmWl606y3Xa9/aUGyf98gOiZtF9XSAyUgAAAABJRU5ErkJggg==);
+}
