@@ -4,14 +4,17 @@
 var Div = function(args) {
 	//	A widget that renders a <div> with a background color. It is draggable and resizable.
 	//
-	//	args.color: String
-	//		A CSS-compatible color value.
+	//	args.size: Array[integer, integer]
+	//		The dimension of the widget in pixels (x, y).
 	//	args.position: Array[integer, integer]
 	//		The initial absolute position in pixels (x, y).
+	//	args.color: String
+	//		A CSS-compatible color value.
 	
 	// Handle arguments.
-	this.color = args.color
+	this.size = args.size
 	this.position = args.position
+	this.color = args.color
 	
 	// Create main element and add style.
 	var node = this.node = document.createElement("DIV")
@@ -19,8 +22,8 @@ var Div = function(args) {
 		position: 'absolute',
 		left: this.position[0] + 'px',
 		top: this.position[1] + 'px',
-		width: '30px',
-		height: '30px',
+		width: this.size[0] + 'px',
+		height: this.size[1] + 'px',
 		background: this.color
 	}
 	for (var property in styles) {
@@ -49,30 +52,40 @@ var Div = function(args) {
 	// Add close button.
 	var closeNode = document.createElement('DIV')
 	closeNode.setAttribute('style', 'position:absolute;top:-4px;left:-4px;width:11px;height:11px;background:black;')
-	var self = this
 	closeNode.addEventListener('click', function() {
-		document.body.removeChild(node)
+		node.parentNode.removeChild(node)
 	})
 	node.appendChild(closeNode)
 	
 	return this
 }
 
-var addBox = function() {
-	var position = [
-		Math.floor(Math.random() * (window.innerWidth - 30)),
-		Math.floor(Math.random() * (window.innerHeight - 30))
-	]
-	for (var color = [], i = 0; i < 3; color.push(Math.floor(Math.random() * 255)), ++i);
-	var cssColor = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'
-	document.body.appendChild((new Div({color: cssColor, position: position})).node)
-}
+var controller = (function() {
+	
+	var boxSize = [30, 30]
+	
+	var init = function() {
+		var button = document.createElement('BUTTON')
+		button.appendChild(document.createTextNode('add box'))
+		button.addEventListener('click', addBox)
+		document.body.appendChild(button)
+	}
+	
+	var addBox = function() {
+		var position = [
+			Math.floor(Math.random() * (window.innerWidth - boxSize[0])),
+			Math.floor(Math.random() * (window.innerHeight - boxSize[1]))
+		]
+		for (var color = [], i = 0; i < 3; color.push(Math.floor(Math.random() * 255)), ++i);
+		var cssColor = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'
+		document.body.appendChild((new Div({size: boxSize, position: position, color: cssColor})).node)
+	}
+	
+	return {
+		init: init
+	}
+})()
 
-document.addEventListener('DOMContentLoaded', function() {
-	var button = document.createElement('BUTTON')
-	button.appendChild(document.createTextNode('add box'))
-	button.addEventListener('click', addBox)
-	document.body.appendChild(button)
-})
+document.addEventListener('DOMContentLoaded', controller.init)
 
 })()
