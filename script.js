@@ -58,9 +58,21 @@ var Div = function(args) {
 	return this
 }
 
-// test
+var addBox = function() {
+	var position = [
+		Math.floor(Math.random() * (window.innerWidth - 30)),
+		Math.floor(Math.random() * (window.innerHeight - 30))
+	]
+	for (var color = [], i = 0; i < 3; color.push(Math.floor(Math.random() * 255)), ++i);
+	var cssColor = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'
+	document.body.appendChild((new Div({color: cssColor, position: position})).node)
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-	document.body.appendChild((new Div({color: 'blue', position: [50, 50]})).node)
+	var button = document.createElement('BUTTON')
+	button.appendChild(document.createTextNode('add box'))
+	button.addEventListener('click', addBox)
+	document.body.appendChild(button)
 })
 
 })()
