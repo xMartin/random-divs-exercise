@@ -34,6 +34,7 @@ var Div = function(args) {
 	// Make draggable.
 	var downEventHandler = function(evt) {
 		evt.preventDefault()  // no native dragging
+		node.style.zIndex = Div.zIndex++
 		var offset = null
 		var moveEventHandler = function(evt) {
 			offset = offset || [evt.clientX - node.offsetLeft, evt.clientY - node.offsetTop]
@@ -85,6 +86,7 @@ var Div = function(args) {
 	
 	return this
 }
+Div.zIndex = 1
 
 var controller = (function() {
 	
