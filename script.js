@@ -47,6 +47,13 @@ Div.prototype.render = function() {
 	for (var property in styles) {
 		node.style[property] = styles[property]
 	}
+	var closeNode = document.createElement("DIV")
+	closeNode.setAttribute('style', 'position:absolute;top:-4px;left:-4px;width:11px;height:11px;background:black;')
+	var self = this
+	closeNode.addEventListener('click', function(){
+		document.body.removeChild(node)
+	})
+	node.appendChild(closeNode)
 }
 
 // test
