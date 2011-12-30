@@ -1,6 +1,45 @@
 "use strict";
 (function(){
 
+var myLib = (function() {
+	
+	var isTouchDevice = 'ontouchstart' in window
+	
+	var events = {
+		'press': isTouchDevice ? 'touchstart' : 'mousedown',
+		'move': isTouchDevice ? 'touchmove' : 'mousemove',
+		'release': isTouchDevice ? 'touchend' : 'mouseup'
+	}
+	
+	return {
+		
+		getClientPosition: function(evt) {
+			if (evt.clientX !== undefined) {
+				return [evt.clientX, evt.clientY]
+			}
+			// touch
+			if (evt.changedTouches) {
+				return [evt.changedTouches[0].clientX, evt.changedTouches[0].clientY]
+			}
+			return null
+		},
+
+		on: function(/*DOMNode*/ node, /*String*/ event, /*Function*/ handler) {
+			if (event in events) {
+				event = events[event]
+			}
+			return node.addEventListener(event, handler)
+		},
+		
+		off: function(/*DOMNode*/ node, /*String*/ event, /*Function*/ handler) {
+			if (event in events) {
+				event = events[event]
+			}
+			return node.removeEventListener(event, handler)
+		}
+	}
+})()
+
 var Div = function(args) {
 	//	A widget that renders a <div> with a background color. It is draggable and resizable.
 	//
@@ -27,20 +66,22 @@ var Div = function(args) {
 	node.style.background = this.color
 	
 	// Make draggable.
-	node.addEventListener('mousedown', function(evt) {
+	myLib.on(node, 'press', function(evt) {
 		evt.preventDefault()  // no native dragging
 		node.style.zIndex = Div.zIndex++
-		var offset = [evt.clientX - node.offsetLeft, evt.clientY - node.offsetTop]
+		var clientPosition = myLib.getClientPosition(evt)
+		var offset = [clientPosition[0] - node.offsetLeft, clientPosition[1] - node.offsetTop]
 		var moveEventHandler = function(evt) {
-			node.style.left = (evt.clientX - offset[0]) + 'px'
-			node.style.top = (evt.clientY - offset[1]) + 'px'
+			var clientPosition = myLib.getClientPosition(evt)
+			node.style.left = (clientPosition[0] - offset[0]) + 'px'
+			node.style.top = (clientPosition[1] - offset[1]) + 'px'
 		}
 		var dropEventHandler = function(evt) {
-			document.removeEventListener('mousemove', moveEventHandler)
-			document.removeEventListener('mouseup', dropEventHandler)
+			myLib.off(document, 'move', moveEventHandler)
+			myLib.off(document, 'release', dropEventHandler)
 		}
-		document.addEventListener('mousemove', moveEventHandler)
-		document.addEventListener('mouseup', dropEventHandler)
+		myLib.on(document, 'move', moveEventHandler)
+		myLib.on(document, 'release', dropEventHandler)
 	})
 	
 	// Add close button.
@@ -48,6 +89,10 @@ var Div = function(args) {
 	closeNode.className = 'close'
 	closeNode.addEventListener('click', function() {
 		node.parentNode.removeChild(node)
+	})
+	// Stop propagation of the touchstart event here as it seems to mask the click event.
+	closeNode.addEventListener('touchstart', function(evt) {
+		evt.stopPropagation()
 	})
 	closeNode.addEventListener('mousedown', function(evt) {
 		evt.stopPropagation()  // no dragging here
@@ -57,21 +102,23 @@ var Div = function(args) {
 	// Add resize handle.
 	var resizeNode = document.createElement('DIV')
 	resizeNode.setAttribute('style', 'position:absolute;bottom:-3px;right:-3px;width:7px;height:7px;cursor:se-resize;')
-	resizeNode.addEventListener('mousedown', function(evt) {
+	myLib.on(resizeNode, 'press', function(evt) {
 		evt.preventDefault()  // no native dragging
 		evt.stopPropagation()  // no widget dragging
-		var startPosition = [evt.clientX, evt.clientY]
+		var clientPosition = myLib.getClientPosition(evt)
+		var startPosition = clientPosition
 		var startDimensions = [node.clientWidth, node.clientHeight]
 		var moveEventHandler = function(evt) {
-			node.style.width = (startDimensions[0] + evt.clientX - startPosition[0]) + 'px'
-			node.style.height = (startDimensions[1] + evt.clientY - startPosition[1]) + 'px'
+			var clientPosition = myLib.getClientPosition(evt)
+			node.style.width = (startDimensions[0] + clientPosition[0] - startPosition[0]) + 'px'
+			node.style.height = (startDimensions[1] + clientPosition[1] - startPosition[1]) + 'px'
 		}
 		var dropEventHandler = function(evt) {
-			document.removeEventListener('mousemove', moveEventHandler)
-			document.removeEventListener('mouseup', dropEventHandler)
+			myLib.off(document, 'move', moveEventHandler)
+			myLib.off(document, 'release', dropEventHandler)
 		}
-		document.addEventListener('mousemove', moveEventHandler)
-		document.addEventListener('mouseup', dropEventHandler)
+		myLib.on(document, 'move', moveEventHandler)
+		myLib.on(document, 'release', dropEventHandler)
 	})
 	node.appendChild(resizeNode)
 	
