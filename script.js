@@ -2,12 +2,13 @@
 (function() {
 
 var myLib = (function() {
-	var isTouchDevice = 'ontouchstart' in window
-	var events = {
-		'press': isTouchDevice ? 'touchstart' : 'mousedown',
-		'move': isTouchDevice ? 'touchmove' : 'mousemove',
-		'release': isTouchDevice ? 'touchend' : 'mouseup'
-	}
+	var isTouchDevice = 'ontouchstart' in window,
+		events = {
+			'press': isTouchDevice ? 'touchstart' : 'mousedown',
+			'move': isTouchDevice ? 'touchmove' : 'mousemove',
+			'release': isTouchDevice ? 'touchend' : 'mouseup'
+		}
+	
 	return {
 		getClientPosition: function(evt) {
 			// mouse
@@ -47,13 +48,15 @@ var Div = function(args) {
 	//
 	//	returns itself, holding the main DOM element as the property `node` so we can append it to the document
 	
+	var node, closeNode, resizeNode
+	
 	// Handle arguments.
 	this.size = args.size
 	this.position = args.position
 	this.color = args.color
 	
 	// Create main element and add style.
-	var node = this.node = document.createElement("DIV")
+	node = this.node = document.createElement("DIV")
 	node.className = 'draggable'
 	node.style.position = 'absolute'
 	node.style.left = this.position[0] + 'px'
@@ -64,25 +67,27 @@ var Div = function(args) {
 	
 	// Make draggable.
 	myLib.on(node, 'press', function(evt) {
+		var clientPosition = myLib.getClientPosition(evt),
+			offset = [clientPosition[0] - node.offsetLeft, clientPosition[1] - node.offsetTop],
+			moveEventHandler = function(evt) {
+				var clientPosition = myLib.getClientPosition(evt)
+				node.style.left = (clientPosition[0] - offset[0]) + 'px'
+				node.style.top = (clientPosition[1] - offset[1]) + 'px'
+			},
+			dropEventHandler = function(evt) {
+				myLib.off(document, 'move', moveEventHandler)
+				myLib.off(document, 'release', dropEventHandler)
+			}
+		
 		evt.preventDefault()  // no native dragging
 		node.style.zIndex = Div.zIndex++
-		var clientPosition = myLib.getClientPosition(evt)
-		var offset = [clientPosition[0] - node.offsetLeft, clientPosition[1] - node.offsetTop]
-		var moveEventHandler = function(evt) {
-			var clientPosition = myLib.getClientPosition(evt)
-			node.style.left = (clientPosition[0] - offset[0]) + 'px'
-			node.style.top = (clientPosition[1] - offset[1]) + 'px'
-		}
-		var dropEventHandler = function(evt) {
-			myLib.off(document, 'move', moveEventHandler)
-			myLib.off(document, 'release', dropEventHandler)
-		}
+		
 		myLib.on(document, 'move', moveEventHandler)
 		myLib.on(document, 'release', dropEventHandler)
 	})
 	
 	// Add close button.
-	var closeNode = document.createElement('DIV')
+	closeNode = document.createElement('DIV')
 	closeNode.className = 'close'
 	closeNode.addEventListener('click', function() {
 		node.parentNode.removeChild(node)
@@ -97,23 +102,25 @@ var Div = function(args) {
 	node.appendChild(closeNode)
 	
 	// Add resize handle.
-	var resizeNode = document.createElement('DIV')
+	resizeNode = document.createElement('DIV')
 	resizeNode.className = 'resize'
 	myLib.on(resizeNode, 'press', function(evt) {
+		var startPosition = myLib.getClientPosition(evt),
+			startDimensions = [node.clientWidth, node.clientHeight],
+			moveEventHandler = function(evt) {
+				var clientPosition = myLib.getClientPosition(evt)
+				node.style.width = (startDimensions[0] + clientPosition[0] - startPosition[0]) + 'px'
+				node.style.height = (startDimensions[1] + clientPosition[1] - startPosition[1]) + 'px'
+			},
+			dropEventHandler = function(evt) {
+				myLib.off(document, 'move', moveEventHandler)
+				myLib.off(document, 'release', dropEventHandler)
+			}
+		
 		evt.preventDefault()  // no native dragging
 		evt.stopPropagation()  // no widget dragging
 		node.style.zIndex = Div.zIndex++
-		var startPosition = myLib.getClientPosition(evt)
-		var startDimensions = [node.clientWidth, node.clientHeight]
-		var moveEventHandler = function(evt) {
-			var clientPosition = myLib.getClientPosition(evt)
-			node.style.width = (startDimensions[0] + clientPosition[0] - startPosition[0]) + 'px'
-			node.style.height = (startDimensions[1] + clientPosition[1] - startPosition[1]) + 'px'
-		}
-		var dropEventHandler = function(evt) {
-			myLib.off(document, 'move', moveEventHandler)
-			myLib.off(document, 'release', dropEventHandler)
-		}
+		
 		myLib.on(document, 'move', moveEventHandler)
 		myLib.on(document, 'release', dropEventHandler)
 	})
@@ -124,16 +131,22 @@ var Div = function(args) {
 Div.zIndex = 1
 
 var controller = (function() {
-	var boxSize = [30, 30]
-	var addBox = function() {
-		var position = [
-			Math.floor(Math.random() * (window.innerWidth - boxSize[0])),
-			Math.floor(Math.random() * (window.innerHeight - boxSize[1]))
-		]
-		for (var color = [], i = 0; i < 3; color.push(Math.floor(Math.random() * 255)), ++i);
-		var cssColor = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'
-		document.body.appendChild((new Div({size: boxSize, position: position, color: cssColor})).node)
-	}
+	var boxSize = [30, 30],
+		addBox = function() {
+			var position = [
+					Math.floor(Math.random() * (window.innerWidth - boxSize[0])),
+					Math.floor(Math.random() * (window.innerHeight - boxSize[1]))
+				],
+				color = [
+					Math.floor(Math.random() * 255),
+					Math.floor(Math.random() * 255),
+					Math.floor(Math.random() * 255)
+				],
+				cssColor = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'
+			
+			document.body.appendChild((new Div({size: boxSize, position: position, color: cssColor})).node)
+		}
+	
 	return {
 		init: function() {
 			var button = document.createElement('BUTTON')
