@@ -137,12 +137,10 @@ var controller = (function() {
 					Math.floor(Math.random() * (window.innerWidth - boxSize[0])),
 					Math.floor(Math.random() * (window.innerHeight - boxSize[1]))
 				],
-				color = [
-					Math.floor(Math.random() * 255),
-					Math.floor(Math.random() * 255),
-					Math.floor(Math.random() * 255)
-				],
-				cssColor = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'
+				color = function() {
+					return Math.floor(Math.random() * 255)
+				},
+				cssColor = 'rgb(' + color() + ',' + color() + ',' + color() + ')'
 			
 			document.body.appendChild((new Div({size: boxSize, position: position, color: cssColor})).node)
 		}
