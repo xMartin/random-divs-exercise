@@ -19,7 +19,7 @@ var myLib = (function() {
 			if (evt.changedTouches) {
 				return [evt.changedTouches[0].clientX, evt.changedTouches[0].clientY]
 			}
-			return null
+			throw new Error('Unsupported environment: Cannot determine the position of the cursor or the finger on the screen.')
 		},
 		on: function(/*DOMNode*/ node, /*String*/ event, /*Function*/ handler) {
 			if (event in events) {
