@@ -1,7 +1,22 @@
 "use strict";
 (function() {
 
+// A single page javascript app that does the following:
+//
+// - With a button the user can add 30x30px divs files with a random color in a random position on the screen.
+// - The user can drag around these boxes on the page, resize and delete them.
+// - Supports Chrome, Safari, FF and IE9
+//
+// The user interface is optimized for mouse use but iOS touch input is also supported.
+
 var myLib = (function() {
+	// Little library of three functions helping to handle events coming from mouse or touch input
+	// in a unified way. Three abstract event types ("press", "move", "release") are defined that are
+	// mapped to their corresponding input type native event by the wrapper functions "on" and "off"
+	// that wrap the native "addEventListener" and "removeEventListener" methods. Additionally
+	// there's the function "getClientPosition" that returns the current position of either the mouse
+	// cursor or the first touch.
+	
 	var isTouchDevice = 'ontouchstart' in window,
 		events = {
 			'press': isTouchDevice ? 'touchstart' : 'mousedown',
