@@ -104,14 +104,11 @@ var Div = function(args) {
 	// Add close button.
 	closeNode = document.createElement('DIV')
 	closeNode.className = 'close'
+	// Register click event handler for close button. "Click" works on iOS, too.
 	closeNode.addEventListener('click', function() {
 		node.parentNode.removeChild(node)
 	})
-	// Stop propagation of the touchstart event here as it seems to mask the click event.
-	closeNode.addEventListener('touchstart', function(evt) {
-		evt.stopPropagation()
-	})
-	closeNode.addEventListener('mousedown', function(evt) {
+	myLib.on(closeNode, 'press', function(evt) {
 		evt.stopPropagation()  // no dragging here
 	})
 	node.appendChild(closeNode)
