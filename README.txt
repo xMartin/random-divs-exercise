@@ -10,5 +10,3 @@ Create a single-page JavaScript app that does the following:
 My comments:
 
 - I made the UI with mouse input in mind as I thought of that when I read about the browsers that should be supported. Later I added support for iOS but the UI is not optimized for touch input (I have ideas, though).
-
-The app is hosted at: http://name.siarp.de/martin/random-divs-exercise/.
