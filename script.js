@@ -137,8 +137,6 @@ var Div = function(args) {
 		myLib.on(document, 'release', dropEventHandler)
 	})
 	node.appendChild(resizeNode)
-	
-	return this
 }
 Div.zIndex = 1
 
